@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+import pickle
 from matplotlib import pyplot as plt
 
 def drawlines(img_L,img_R,lines,pts1,pts2):
@@ -18,8 +19,8 @@ def drawlines(img_L,img_R,lines,pts1,pts2):
 
 
 
-img_L=cv2.imread('../data_pair/2-book_left.jpg',0)
-img_R=cv2.imread('../data_pair/2-book_right.jpg',0)
+img_L=cv2.imread('../data_pair/4-bottle_left.jpg',0)
+img_R=cv2.imread('../data_pair/4-bottle_right.jpg',0)
 
 sift=cv2.SIFT()
 
@@ -48,19 +49,38 @@ for i,(k_1,k_2) in enumerate(matches):
 n_match=len(good_mat)
 arr_pL=np.zeros((n_match,2))
 arr_pR=np.zeros((n_match,2))
+#print n_match
 for i in range(n_match):
     arr_pL[i,:]=point_L[i]
     arr_pR[i,:]=point_R[i]
+num_point=n_match
+point_ch=np.random.choice(arr_pL.shape[0],num_point)
+#print point_ch
+Four_pL=np.zeros((num_point,2))
+Four_pR=np.zeros((num_point,2))
+for i in range(num_point):
+    Four_pL[i,:]=arr_pL[point_ch[i],:]
+    Four_pR[i, :] = arr_pR[point_ch[i], :]
+
+#print Four_pL
+#print Four_pR
+height=img_L.shape[0]
+wid=img_L.shape[1]
+F,mask=cv2.findFundamentalMat(np.float32(Four_pL),np.float32(Four_pR),cv2.FM_RANSAC)
+#print mask
+retval,H_L,H_R=cv2.stereoRectifyUncalibrated(Four_pL.reshape(-1,1),Four_pR.reshape(-1,1),F,(wid,height))
+
+#print retval
+#print H_L
 
 
-F,mask=cv2.findFundamentalMat(np.float32(arr_pL),np.float32(arr_pR),cv2.FM_RANSAC)
-retval,H_L,H_R=cv2.stereoRectifyUncalibrated(arr_pL.reshape(-1,1),arr_pR.reshape(-1,1),F,img_L.shape)
-
-print retval
 
 
-inl_pL=np.float32(arr_pL[mask.ravel()==1])
-inl_pR=np.float32(arr_pR[mask.ravel()==1])
+
+inl_pL=np.float32(Four_pL[mask.ravel()==1])
+inl_pR=np.float32(Four_pR[mask.ravel()==1])
+#print inl_pL
+#print inl_pR
 #print inl_pL
 #print inl_pR
 #calculate the left epipolar line
@@ -74,8 +94,19 @@ line_R=line_R.reshape(-1,3)
 #print line_R
 img_R_rep,img_L_rep=drawlines(img_R,img_L,line_R,inl_pR,inl_pL)
 
+rect_L_w_ep=cv2.warpPerspective(img_L_lep,H_L,(wid,height))
+rect_R_w_ep=cv2.warpPerspective(img_R_rep,H_R,(wid,height))
+
+rect_L=cv2.warpPerspective(img_L,H_L,(wid,height))
+rect_R=cv2.warpPerspective(img_R,H_R,(wid,height))
+
+
+cv2.imshow('rec left',rect_L)
+cv2.imshow('rec right',rect_R)
+cv2.waitKey(0)
 
 #cv2.imshow('left epipolar line',img_L_lep)
 
 #cv2.imshow('right epipolar line',img_R_rep)
 #cv2.waitKey(0)
+
