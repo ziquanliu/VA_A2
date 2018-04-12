@@ -13,7 +13,7 @@ img_l=cv2.imread('../data_pair/5-lawn_left.jpg')
 img_r=cv2.imread('../data_pair/5-lawn_left.jpg')
 mask=np.zeros((img_l.shape[:2]),np.uint8)
 
-
+print img_l.dtype
 
 cv2.grabCut(img_l,mask,rect_p,bgm,fgm,5,cv2.GC_INIT_WITH_RECT)
 mask_s=np.where((mask==2)|(mask==0),0,1).astype('uint8')
