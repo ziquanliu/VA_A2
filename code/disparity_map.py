@@ -89,8 +89,8 @@ def cal_rectit_mat(file_name):
     return H_L,H_R,norm_disp
 
 
-H_L,H_R,norm_disp=cal_rectit_mat('2-book')
-mask_s=pickle.load(open('../data_pair/2_l_mask.txt','rb'))
+H_L,H_R,norm_disp=cal_rectit_mat('5-lawn')
+mask_s=pickle.load(open('../data_pair/5_l_mask.txt','rb'))
 height=norm_disp.shape[0]
 wid=norm_disp.shape[1]
 #print height
@@ -103,10 +103,10 @@ rect_mask = cv2.warpPerspective(mask_s, H_L, (wid, height))
 
 mask_disp=cv2.bitwise_and(norm_disp,norm_disp,mask=rect_mask)
 #print mask_disp[350,:]
-print mask_disp.dtype
+#print mask_disp.dtype
 #print norm_disp.dtype
-int_mask_disp=(np.round(mask_disp*255.0)).astype(np.uint8)
-cv2.imwrite('../result/2-book_result_mask.png',cv2.cvtColor(int_mask_disp,cv2.COLOR_GRAY2RGB))
+#int_mask_disp=(np.round(mask_disp*255.0)).astype(np.uint8)
+#cv2.imwrite('../result/5-lawn_result_mask.png',cv2.cvtColor(int_mask_disp,cv2.COLOR_GRAY2RGB))
 #print rgb_mask_disp[350,:,1]
 
 

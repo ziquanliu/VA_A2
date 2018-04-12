@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-import pickle
 from matplotlib import pyplot as plt
 
 def drawlines(img_L,img_R,lines,pts1,pts2):
@@ -17,7 +16,7 @@ def drawlines(img_L,img_R,lines,pts1,pts2):
         cv2.circle(img_R_g,tuple(pt2),5,color,-1)
     return img_L_g,img_R_g
 
-def plot_epip_rec(file_name):
+def plot_epip_line(file_name):
     img_L = cv2.imread('../data_pair/'+file_name+'_left.jpg', 0)
     img_R = cv2.imread('../data_pair/'+file_name+'_right.jpg', 0)
 
@@ -47,38 +46,14 @@ def plot_epip_rec(file_name):
     n_match = len(good_mat)
     arr_pL = np.zeros((n_match, 2))
     arr_pR = np.zeros((n_match, 2))
-    # print n_match
     for i in range(n_match):
         arr_pL[i, :] = point_L[i]
         arr_pR[i, :] = point_R[i]
-    num_point = n_match
-    point_ch = np.random.choice(arr_pL.shape[0], num_point)
-    # print point_ch
-    Four_pL = np.zeros((num_point, 2))
-    Four_pR = np.zeros((num_point, 2))
-    for i in range(num_point):
-        Four_pL[i, :] = arr_pL[point_ch[i], :]
-        Four_pR[i, :] = arr_pR[point_ch[i], :]
 
-    # print Four_pL
-    # print Four_pR
-    height = img_L.shape[0]
-    wid = img_L.shape[1]
-    F, mask = cv2.findFundamentalMat(np.float32(Four_pL), np.float32(Four_pR), cv2.FM_RANSAC)
-    # print mask
-    retval, H_L, H_R = cv2.stereoRectifyUncalibrated(Four_pL.reshape(-1, 1), Four_pR.reshape(-1, 1), F, (wid, height))
+    F, mask = cv2.findFundamentalMat(np.float32(arr_pL), np.float32(arr_pR), cv2.FM_RANSAC)
 
-    # print retval
-    # print H_L
-
-
-
-
-
-    inl_pL = np.float32(Four_pL[mask.ravel() == 1])
-    inl_pR = np.float32(Four_pR[mask.ravel() == 1])
-    # print inl_pL
-    # print inl_pR
+    inl_pL = np.float32(arr_pL[mask.ravel() == 1])
+    inl_pR = np.float32(arr_pR[mask.ravel() == 1])
     # print inl_pL
     # print inl_pR
     # calculate the left epipolar line
@@ -92,21 +67,10 @@ def plot_epip_rec(file_name):
     # print line_R
     img_R_rep, img_L_rep = drawlines(img_R, img_L, line_R, inl_pR, inl_pL)
 
-    rect_L_w_ep = cv2.warpPerspective(img_L_lep, H_L, (wid, height))
-    rect_R_w_ep = cv2.warpPerspective(img_R_rep, H_R, (wid, height))
+    cv2.imshow('left epipolar line', img_L_lep)
 
-    rect_L = cv2.warpPerspective(img_L, H_L, (wid, height))
-    rect_R = cv2.warpPerspective(img_R, H_R, (wid, height))
-
-    cv2.imshow('rec left', rect_L_w_ep)
-    cv2.imshow('rec right', rect_R_w_ep)
+    cv2.imshow('right epipolar line', img_R_rep)
     cv2.waitKey(0)
 
-    # cv2.imshow('left epipolar line',img_L_lep)
-
-    # cv2.imshow('right epipolar line',img_R_rep)
-    # cv2.waitKey(0)
-
-
 if __name__ == "__main__":
-    plot_epip_rec('1-cones')
+    plot_epip_line('1-cones')
