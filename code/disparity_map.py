@@ -73,7 +73,7 @@ def cal_rectit_mat(file_name):
 
     minDis = 0
     numDis = 256 - minDis
-    SADWS = 18
+    SADWS = 10
     P1 = 8 * 1 * SADWS * SADWS
     P2 = 32 * 1 * SADWS * SADWS
 
@@ -88,9 +88,10 @@ def cal_rectit_mat(file_name):
     #cv2.waitKey(0)
     return H_L,H_R,norm_disp
 
-
-H_L,H_R,norm_disp=cal_rectit_mat('5-lawn')
-mask_s=pickle.load(open('../data_pair/5_l_mask.txt','rb'))
+file_name='1-cones'
+mask_name=1
+H_L,H_R,norm_disp=cal_rectit_mat(file_name)
+mask_s=pickle.load(open('../data_pair/'+str(mask_name)+'_l_mask.txt','rb'))
 height=norm_disp.shape[0]
 wid=norm_disp.shape[1]
 #print height
@@ -113,8 +114,13 @@ mask_disp=cv2.bitwise_and(norm_disp,norm_disp,mask=rect_mask)
 fig_1=plt.figure()
 plt.subplot(1,2,1)
 plt.imshow(cv2.cvtColor(norm_disp,cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+plt.title('image')
 plt.subplot(1,2,2)
 plt.imshow(cv2.cvtColor(mask_disp,cv2.COLOR_GRAY2RGB))
-plt.show()
+plt.title('object')
+plt.axis('off')
+plt.savefig('../result/'+file_name+'_dis_map.eps',dpi=300)
+#plt.show()
 
 
