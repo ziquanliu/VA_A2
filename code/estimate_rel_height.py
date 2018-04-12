@@ -111,6 +111,6 @@ rel_h_5=right_cone_h_5/left_cone_h_5
 
 
 
-print cal_rel_height('5-lawn',rel_h_5)
+print 1.0/cal_rel_height('5-lawn',rel_h_5)
 
 

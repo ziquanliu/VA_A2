@@ -88,39 +88,79 @@ def cal_rectit_mat(file_name):
     #cv2.waitKey(0)
     return H_L,H_R,norm_disp
 
+def get_disp_map(file_name,mask_name):
+    H_L, H_R, norm_disp = cal_rectit_mat(file_name)
+    mask_s = pickle.load(open('../data_pair/' + str(mask_name) + '_l_mask.txt', 'rb'))
+    height = norm_disp.shape[0]
+    wid = norm_disp.shape[1]
+    # print height
+    # print wid
+
+    rect_mask = cv2.warpPerspective(mask_s, H_L, (wid, height))
+    # print rect_mask.shape
+    # print norm_disp.shape
+
+
+    mask_disp = cv2.bitwise_and(norm_disp, norm_disp, mask=rect_mask)
+    return norm_disp,mask_disp
+
+
+
 file_name='1-cones'
 mask_name=1
-H_L,H_R,norm_disp=cal_rectit_mat(file_name)
-mask_s=pickle.load(open('../data_pair/'+str(mask_name)+'_l_mask.txt','rb'))
-height=norm_disp.shape[0]
-wid=norm_disp.shape[1]
-#print height
-#print wid
+norm_disp_1,mask_disp_1=get_disp_map(file_name,mask_name)
+file_name='2-book'
+mask_name=2
+norm_disp_2,mask_disp_2=get_disp_map(file_name,mask_name)
+file_name='3-box'
+mask_name=3
+norm_disp_3,mask_disp_3=get_disp_map(file_name,mask_name)
+file_name='4-bottle'
+mask_name=4
+norm_disp_4,mask_disp_4=get_disp_map(file_name,mask_name)
+file_name='5-lawn'
+mask_name=5
+norm_disp_5,mask_disp_5=get_disp_map(file_name,mask_name)
 
-rect_mask = cv2.warpPerspective(mask_s, H_L, (wid, height))
-#print rect_mask.shape
-#print norm_disp.shape
-
-
-mask_disp=cv2.bitwise_and(norm_disp,norm_disp,mask=rect_mask)
-#print mask_disp[350,:]
-#print mask_disp.dtype
-#print norm_disp.dtype
-#int_mask_disp=(np.round(mask_disp*255.0)).astype(np.uint8)
-#cv2.imwrite('../result/5-lawn_result_mask.png',cv2.cvtColor(int_mask_disp,cv2.COLOR_GRAY2RGB))
-#print rgb_mask_disp[350,:,1]
-
-
-fig_1=plt.figure()
-plt.subplot(1,2,1)
-plt.imshow(cv2.cvtColor(norm_disp,cv2.COLOR_GRAY2RGB))
+fig = plt.figure(figsize=(15, 40))
+plt.subplot(5, 2, 1)
+plt.imshow(cv2.cvtColor(norm_disp_1, cv2.COLOR_GRAY2RGB))
 plt.axis('off')
-plt.title('image')
-plt.subplot(1,2,2)
-plt.imshow(cv2.cvtColor(mask_disp,cv2.COLOR_GRAY2RGB))
-plt.title('object')
+plt.title('image disparity')
+plt.subplot(5, 2, 2)
+plt.imshow(cv2.cvtColor(mask_disp_1, cv2.COLOR_GRAY2RGB))
 plt.axis('off')
-plt.savefig('../result/'+file_name+'_dis_map.eps',dpi=300)
-#plt.show()
+plt.title('object disparity')
+
+plt.subplot(5, 2, 3)
+plt.imshow(cv2.cvtColor(norm_disp_2, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+plt.subplot(5, 2, 4)
+plt.imshow(cv2.cvtColor(mask_disp_2, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+
+plt.subplot(5, 2, 5)
+plt.imshow(cv2.cvtColor(norm_disp_3, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+plt.subplot(5, 2, 6)
+plt.imshow(cv2.cvtColor(mask_disp_3, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+
+plt.subplot(5, 2, 7)
+plt.imshow(cv2.cvtColor(norm_disp_4, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+plt.subplot(5, 2, 8)
+plt.imshow(cv2.cvtColor(mask_disp_4, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+
+plt.subplot(5, 2, 9)
+plt.imshow(cv2.cvtColor(norm_disp_5, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+plt.subplot(5, 2, 10)
+plt.imshow(cv2.cvtColor(mask_disp_5, cv2.COLOR_GRAY2RGB))
+plt.axis('off')
+
+plt.savefig('../result/disparity_map.eps', dpi=80)
+
 
 

@@ -81,16 +81,56 @@ def plot_epip_line(file_name):
     #cv2.waitKey(0)
 
 if __name__ == "__main__":
+    file_name='1-cones'
+    img_l_1,img_r_1=plot_epip_line(file_name)
+    file_name='2-book'
+    img_l_2,img_r_2=plot_epip_line(file_name)
+    file_name='3-box'
+    img_l_3,img_r_3=plot_epip_line(file_name)
+    file_name='4-bottle'
+    img_l_4,img_r_4=plot_epip_line(file_name)
     file_name='5-lawn'
-    img_l_epi,img_r_epi=plot_epip_line(file_name)
-    fig = plt.figure()
-    plt.subplot(1, 2, 1)
-    plt.imshow(cv2.cvtColor(img_l_epi, cv2.COLOR_BGR2RGB))
+    img_l_5,img_r_5=plot_epip_line(file_name)
+
+
+
+    fig = plt.figure(figsize=(15,40))
+    plt.subplot(5, 2, 1)
+    plt.imshow(cv2.cvtColor(img_l_1, cv2.COLOR_BGR2RGB))
     plt.axis('off')
     plt.title('left')
-    plt.subplot(1, 2, 2)
-    plt.imshow(cv2.cvtColor(img_r_epi, cv2.COLOR_BGR2RGB))
+    plt.subplot(5, 2, 2)
+    plt.imshow(cv2.cvtColor(img_r_1, cv2.COLOR_BGR2RGB))
     plt.axis('off')
     plt.title('right')
-    plt.savefig('../result/'+file_name+'_epi.eps',dpi=300)
+
+    plt.subplot(5, 2, 3)
+    plt.imshow(cv2.cvtColor(img_l_2, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+    plt.subplot(5, 2, 4)
+    plt.imshow(cv2.cvtColor(img_r_2, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+
+    plt.subplot(5, 2, 5)
+    plt.imshow(cv2.cvtColor(img_l_3, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+    plt.subplot(5, 2, 6)
+    plt.imshow(cv2.cvtColor(img_r_3, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+
+    plt.subplot(5, 2, 7)
+    plt.imshow(cv2.cvtColor(img_l_4, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+    plt.subplot(5, 2, 8)
+    plt.imshow(cv2.cvtColor(img_r_4, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+
+    plt.subplot(5, 2, 9)
+    plt.imshow(cv2.cvtColor(img_l_5, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+    plt.subplot(5, 2, 10)
+    plt.imshow(cv2.cvtColor(img_r_5, cv2.COLOR_BGR2RGB))
+    plt.axis('off')
+
+    plt.savefig('../result/nonrec_epi.eps',dpi=150)
     #plt.show()
